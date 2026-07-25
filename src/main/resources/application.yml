@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  sql:
+    init:
+      mode: always
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    defer-datasource-initialization: true
+    properties.hibernate.format_sql: true
+
+  logging:
+    level:
+      org.hibernate.orm.boot: TRACE
