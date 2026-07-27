@@ -33,6 +33,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.TestPropertySource;
 
 import java.math.BigDecimal;
 
@@ -41,6 +42,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
+@TestPropertySource(locations = "file:.env")
 public class ProductReviewIntegrationTest {
 
     @Autowired private ProductRepository productRepository;

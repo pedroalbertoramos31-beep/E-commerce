@@ -32,6 +32,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,7 @@ import static org.example.domain.assertion.ProductTestAssertion.*;
 
 @SpringBootTest
 @Transactional
+@TestPropertySource(locations = "file:.env")
 public class ProductIntegrationTest {
 
     @Autowired private ProductRepository productRepository;
