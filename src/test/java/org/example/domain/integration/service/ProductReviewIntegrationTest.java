@@ -4,7 +4,8 @@ import jakarta.transaction.Transactional;
 import org.example.domain.cart.CartRepository;
 import org.example.domain.cart_item.CartItemRepository;
 import org.example.domain.category.CategoryRepository;
-import org.example.domain.factory.*;
+import org.example.domain.fixture.dto.ProductReviewDTOFixture;
+import org.example.domain.fixture.entity.*;
 import org.example.domain.order.Order;
 import org.example.domain.order.OrderRepository;
 import org.example.domain.order_item.OrderItemRepository;
@@ -77,11 +78,11 @@ public class ProductReviewIntegrationTest {
         @BeforeEach
         public void setUp(){
 
-            this.productOwner = userRepository.saveAndFlush(UserTestData.simpleUser());
+            this.productOwner = userRepository.saveAndFlush(UserFixture.builder().build());
 
-            this.product = productRepository.saveAndFlush(ProductTestData.simpleProduct(this.productOwner));
+            this.product = productRepository.saveAndFlush(ProductFixture.builder().vendor(this.productOwner).build());
 
-            this.productStats = productStatsRepository.saveAndFlush(ProductStatsTestData.simpleProductStats(this.product));
+            this.productStats = productStatsRepository.saveAndFlush(ProductStatsFixture.builder().product(this.product).build());
 
         }
 
@@ -96,13 +97,13 @@ public class ProductReviewIntegrationTest {
 
             createInitialReview();
 
-            User customer = userRepository.saveAndFlush(UserTestData.simpleUser("Patrick Jane"));
+            User customer = userRepository.saveAndFlush(UserFixture.builder().username("Patrick Jane").build());
 
-            Order order = orderRepository.saveAndFlush(OrderTestData.simpleOrder(customer, BigDecimal.valueOf(10)));
+            Order order = orderRepository.saveAndFlush(OrderFixture.builder().user(customer).totalAmount(BigDecimal.valueOf(10)).build());
 
-            orderItemRepository.saveAndFlush(OrderItemTestData.simpleOrderItem(this.product, order, order.getTotalAmount()));
+            orderItemRepository.saveAndFlush(OrderItemFixture.builder().product(this.product).order(order).purchasedAt(order.getTotalAmount()).build());
 
-            ProductReviewCreationRequest request = ProductReviewTestData.createReviewRequest(3, "Foo");
+            ProductReviewCreationRequest request = ProductReviewDTOFixture.createReviewRequest(3, "Foo");
 
             // ACT
 
@@ -136,7 +137,7 @@ public class ProductReviewIntegrationTest {
 
             // ARRANGE
 
-            ProductReviewCreationRequest request = ProductReviewTestData.createReviewRequest(3, "Foo");
+            ProductReviewCreationRequest request = ProductReviewDTOFixture.createReviewRequest(3, "Foo");
 
             // ACT & ASSERT
 
@@ -152,9 +153,9 @@ public class ProductReviewIntegrationTest {
 
             // ARRANGE
 
-            User customer = userRepository.saveAndFlush(UserTestData.simpleUser("JoJo"));
+            User customer = userRepository.saveAndFlush(UserFixture.builder().username("JoJo").build());
 
-            ProductReviewCreationRequest request = ProductReviewTestData.createReviewRequest(3, "Foo");
+            ProductReviewCreationRequest request = ProductReviewDTOFixture.createReviewRequest(3, "Foo");
 
             // ACT & ASSERT
 
@@ -170,13 +171,13 @@ public class ProductReviewIntegrationTest {
 
             // ARRANGE
 
-            User customer = userRepository.saveAndFlush(UserTestData.simpleUser("Patrick Jane"));
+            User customer = userRepository.saveAndFlush(UserFixture.builder().username("Patrick Jane").build());
 
-            Order order = orderRepository.saveAndFlush(OrderTestData.simpleOrder(customer, BigDecimal.valueOf(10)));
+            Order order = orderRepository.saveAndFlush(OrderFixture.builder().user(customer).totalAmount(BigDecimal.valueOf(10)).build());
 
-            orderItemRepository.saveAndFlush(OrderItemTestData.simpleOrderItem(this.product, order, order.getTotalAmount()));
+            orderItemRepository.saveAndFlush(OrderItemFixture.builder().product(this.product).order(order).purchasedAt(order.getTotalAmount()).build());
 
-            ProductReviewCreationRequest request = ProductReviewTestData.createReviewRequest(3, "Foo");
+            ProductReviewCreationRequest request = ProductReviewDTOFixture.createReviewRequest(3, "Foo");
 
             productReviewService.createReview(this.product.getId(), customer.getId(), request);
 
@@ -205,13 +206,13 @@ public class ProductReviewIntegrationTest {
 
         public void createInitialReview(){
 
-            User someoneElse = userRepository.saveAndFlush(UserTestData.simpleUser("Someone Else"));
+            User someoneElse = userRepository.saveAndFlush(UserFixture.builder().username("Someone Else").build());
 
-            Order order = orderRepository.saveAndFlush(OrderTestData.simpleOrder(someoneElse, BigDecimal.valueOf(10)));
+            Order order = orderRepository.saveAndFlush(OrderFixture.builder().user(someoneElse).totalAmount(BigDecimal.valueOf(10)).build());
 
-            orderItemRepository.saveAndFlush(OrderItemTestData.simpleOrderItem(this.product, order, order.getTotalAmount()));
+            orderItemRepository.saveAndFlush(OrderItemFixture.builder().product(this.product).order(order).purchasedAt(order.getTotalAmount()).build());
 
-            ProductReviewCreationRequest request = ProductReviewTestData.createReviewRequest(5, "FooBar");
+            ProductReviewCreationRequest request = ProductReviewDTOFixture.createReviewRequest(5, "FooBar");
 
             productReviewService.createReview(this.product.getId(), someoneElse.getId(), request);
 
@@ -229,9 +230,9 @@ public class ProductReviewIntegrationTest {
         @BeforeEach
         public void setUp(){
 
-            this.productOwner = userRepository.saveAndFlush(UserTestData.simpleUser("Patrick Jane"));
+            this.productOwner = userRepository.saveAndFlush(UserFixture.builder().username("Patrick Jane").build());
 
-            this.product = productRepository.saveAndFlush(ProductTestData.simpleProduct(this.productOwner));
+            this.product = productRepository.saveAndFlush(ProductFixture.builder().vendor(this.productOwner).build());
 
         }
 
@@ -278,9 +279,9 @@ public class ProductReviewIntegrationTest {
 
         private void createReview(String username, Integer rating, String comment){
 
-            User customer = userRepository.saveAndFlush(UserTestData.simpleUser(username));
+            User customer = userRepository.saveAndFlush(UserFixture.builder().username(username).build());
 
-            ProductReview review = productReviewRepository.saveAndFlush(ProductReviewTestData.simpleProductReview(rating, comment, this.product, customer));
+            ProductReview review = productReviewRepository.saveAndFlush(ProductReviewFixture.builder().rating(rating).comment(comment).product(this.product).user(customer).build());
 
         }
 

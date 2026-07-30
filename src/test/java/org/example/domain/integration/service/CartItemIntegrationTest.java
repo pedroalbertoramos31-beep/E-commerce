@@ -11,10 +11,11 @@ import org.example.domain.cart_item.CartItemService;
 import org.example.domain.cart_item.dto.request.CartItemUpsertRequest;
 import org.example.domain.cart_item.dto.response.CartItemResponse;
 import org.example.domain.category.CategoryRepository;
-import org.example.domain.factory.CartItemTestData;
-import org.example.domain.factory.CartTestData;
-import org.example.domain.factory.ProductTestData;
-import org.example.domain.factory.UserTestData;
+import org.example.domain.fixture.dto.CartItemDTOFixture;
+import org.example.domain.fixture.entity.CartFixture;
+import org.example.domain.fixture.entity.CartItemFixture;
+import org.example.domain.fixture.entity.ProductFixture;
+import org.example.domain.fixture.entity.UserFixture;
 import org.example.domain.product.Product;
 import org.example.domain.product.ProductRepository;
 import org.example.domain.product_category.ProductCategoryRepository;
@@ -61,11 +62,11 @@ public class CartItemIntegrationTest {
         @BeforeEach
         public void setUp(){
 
-            this.user = userRepository.saveAndFlush(UserTestData.simpleUser());
+            this.user = userRepository.saveAndFlush(UserFixture.builder().build());
 
-            this.cart = cartRepository.saveAndFlush(CartTestData.simpleCart(this.user));
+            this.cart = cartRepository.saveAndFlush(CartFixture.builder().user(this.user).build());
 
-            this.product = productRepository.saveAndFlush(ProductTestData.simpleProduct(this.user));
+            this.product = productRepository.saveAndFlush(ProductFixture.builder().vendor(this.user).build());
 
 
         }
@@ -76,7 +77,7 @@ public class CartItemIntegrationTest {
 
             // ARRANGE
 
-            CartItemUpsertRequest request = CartItemTestData.cartItemUpsertRequest(3);
+            CartItemUpsertRequest request = CartItemDTOFixture.cartItemUpsertRequest(3);
 
             // ACT
 
@@ -98,9 +99,9 @@ public class CartItemIntegrationTest {
 
             // ARRANGE
 
-            CartItem existingItem = cartItemRepository.saveAndFlush(CartItemTestData.simpleCartItem(this.product, this.cart));
+            CartItem existingItem = cartItemRepository.saveAndFlush(CartItemFixture.builder().product(this.product).cart(this.cart).build());
 
-            CartItemUpsertRequest request = CartItemTestData.cartItemUpsertRequest(1);
+            CartItemUpsertRequest request = CartItemDTOFixture.cartItemUpsertRequest(1);
 
             // ACT
 
@@ -144,13 +145,13 @@ public class CartItemIntegrationTest {
 
             // ARRANGE
 
-            User user = userRepository.saveAndFlush(UserTestData.simpleUser());
+            User user = userRepository.saveAndFlush(UserFixture.builder().build());
 
-            Cart cart = cartRepository.saveAndFlush(CartTestData.simpleCart(user));
+            Cart cart = cartRepository.saveAndFlush(CartFixture.builder().user(user).build());
 
-            Product product = productRepository.saveAndFlush(ProductTestData.simpleProduct(user));
+            Product product = productRepository.saveAndFlush(ProductFixture.builder().vendor(user).build());
 
-            CartItem item = cartItemRepository.saveAndFlush(CartItemTestData.simpleCartItem(product, cart));
+            CartItem item = cartItemRepository.saveAndFlush(CartItemFixture.builder().product(product).cart(cart).build());
 
             // ACT
 

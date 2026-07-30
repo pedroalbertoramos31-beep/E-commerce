@@ -4,7 +4,8 @@ import jakarta.transaction.Transactional;
 import org.example.domain.category.*;
 import org.example.domain.category.dto.request.CategoryRegisterRequest;
 import org.example.domain.category.dto.response.CategoryResponse;
-import org.example.domain.factory.CategoryTestData;
+import org.example.domain.fixture.dto.CategoryDTOFixture;
+import org.example.domain.fixture.entity.CategoryFixture;
 import org.example.infrastructure.exception.error.CategoryException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -37,7 +39,7 @@ public class CategoryIntegrationTest {
 
             // ARRANGE
 
-            CategoryRegisterRequest request = CategoryTestData.categoryRegisterRequest();
+            CategoryRegisterRequest request = CategoryDTOFixture.categoryRegisterRequest();
 
             CategoryStatus activeStatus = CategoryStatus.ACTIVE;
 
@@ -66,7 +68,7 @@ public class CategoryIntegrationTest {
 
             // ARRANGE
 
-            CategoryRegisterRequest request = CategoryTestData.categoryRegisterRequest();
+            CategoryRegisterRequest request = CategoryDTOFixture.categoryRegisterRequest();
 
             categoryService.registerCategory(request);
 
@@ -87,7 +89,7 @@ public class CategoryIntegrationTest {
         @BeforeEach
         void setUp(){
 
-            this.category = categoryRepository.saveAndFlush(CategoryTestData.simpleCategory());
+            this.category = categoryRepository.saveAndFlush(CategoryFixture.builder().build());
 
         }
 

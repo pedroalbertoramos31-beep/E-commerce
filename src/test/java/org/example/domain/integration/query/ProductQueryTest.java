@@ -1,8 +1,8 @@
 package org.example.domain.integration.query;
 
 import jakarta.transaction.Transactional;
-import org.example.domain.factory.ProductTestData;
-import org.example.domain.factory.UserTestData;
+import org.example.domain.fixture.entity.ProductFixture;
+import org.example.domain.fixture.entity.UserFixture;
 import org.example.domain.product.Product;
 import org.example.domain.product.ProductQuery;
 import org.example.domain.product.ProductRepository;
@@ -43,9 +43,9 @@ public class ProductQueryTest {
         @BeforeEach
         public void setUp(){
 
-            this.user = userRepository.saveAndFlush(UserTestData.simpleUser());
+            this.user = userRepository.saveAndFlush(UserFixture.builder().build());
 
-            this.product = productRepository.saveAndFlush(ProductTestData.simpleProduct(this.user));
+            this.product = productRepository.saveAndFlush(ProductFixture.builder().vendor(this.user).build());
 
         }
 
@@ -91,9 +91,9 @@ public class ProductQueryTest {
         @BeforeEach
         public void setUp(){
 
-            this.user = userRepository.saveAndFlush(UserTestData.simpleUser());
+            this.user = userRepository.saveAndFlush(UserFixture.builder().build());
 
-            this.product = productRepository.saveAndFlush(ProductTestData.simpleProduct(this.user));
+            this.product = productRepository.saveAndFlush(ProductFixture.builder().vendor(this.user).build());
 
         }
 
@@ -135,7 +135,7 @@ public class ProductQueryTest {
         @BeforeEach
         public void setUp(){
 
-            this.user = userRepository.saveAndFlush(UserTestData.simpleUser());
+            this.user = userRepository.saveAndFlush(UserFixture.builder().build());
 
         }
 
@@ -145,7 +145,7 @@ public class ProductQueryTest {
 
             // ARRANGE
 
-            Product product = productRepository.saveAndFlush(ProductTestData.customProduct(user).stock(1).build());
+            Product product = productRepository.saveAndFlush(ProductFixture.builder().vendor(user).stock(1).build());
 
             Integer enoughQuantity = 1;
 
@@ -163,7 +163,7 @@ public class ProductQueryTest {
 
             // ARRANGE
 
-            Product product = productRepository.saveAndFlush(ProductTestData.customProduct(user).stock(1).build());
+            Product product = productRepository.saveAndFlush(ProductFixture.builder().vendor(user).stock(1).build());
 
             Integer excidingQuantity = 999;
 

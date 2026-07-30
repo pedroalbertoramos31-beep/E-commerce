@@ -6,7 +6,8 @@ import org.example.domain.category.CategoryQuery;
 import org.example.domain.category.CategoryRepository;
 import org.example.domain.category.CategoryStatus;
 import org.example.domain.category.dto.response.CategoryResponse;
-import org.example.domain.factory.*;
+import org.example.domain.fixture.dto.ProductDTOFixture;
+import org.example.domain.fixture.entity.*;
 import org.example.domain.product.*;
 import org.example.domain.product.dto.request.ProductRegisterRequest;
 import org.example.domain.product.dto.request.ProductStockIncreaseRequest;
@@ -73,16 +74,16 @@ public class ProductIntegrationTest {
         @BeforeEach
         public void setUp(){
 
-            this.user = userRepository.saveAndFlush(UserTestData.simpleUser());
+            this.user = userRepository.saveAndFlush(UserFixture.builder().build());
 
-            this.product = productRepository.saveAndFlush(ProductTestData.simpleProduct(user));
-            this.productStats = productStatsRepository.saveAndFlush(ProductStatsTestData.simpleProductStats(this.product));
+            this.product = productRepository.saveAndFlush(ProductFixture.builder().vendor(user).build());
+            this.productStats = productStatsRepository.saveAndFlush(ProductStatsFixture.builder().product(product).build());
 
-            this.categories.add(categoryRepository.saveAndFlush(CategoryTestData.simpleCategory()));
-            this.categories.add(categoryRepository.saveAndFlush(CategoryTestData.customCategory("Fruit", CategoryStatus.ACTIVE)));
+            this.categories.add(categoryRepository.saveAndFlush(CategoryFixture.builder().build()));
+            this.categories.add(categoryRepository.saveAndFlush(CategoryFixture.builder().name("Fruit").status(CategoryStatus.ACTIVE).build()));
 
-            this.productCategories.add(productCategoryRepository.saveAndFlush(ProductCategoryTestData.simpleProductCategory(this.product, this.categories.get(0))));
-            this.productCategories.add(productCategoryRepository.saveAndFlush(ProductCategoryTestData.simpleProductCategory(this.product, this.categories.get(1))));
+            this.productCategories.add(productCategoryRepository.saveAndFlush(ProductCategoryFixture.builder().product(this.product).category(this.categories.get(0)).build()));
+            this.productCategories.add(productCategoryRepository.saveAndFlush(ProductCategoryFixture.builder().product(this.product).category(this.categories.get(1)).build()));
 
         }
 
@@ -140,7 +141,7 @@ public class ProductIntegrationTest {
         @BeforeEach
         public void setUp(){
 
-            this.user = userRepository.saveAndFlush(UserTestData.simpleUser());
+            this.user = userRepository.saveAndFlush(UserFixture.builder().build());
 
             setProducts("Apple");
 
@@ -156,9 +157,9 @@ public class ProductIntegrationTest {
 
         public void setProducts(String name){
 
-            Product product = productRepository.saveAndFlush(ProductTestData.customProduct(this.user).name(name).build());
+            Product product = productRepository.saveAndFlush(ProductFixture.builder().vendor(this.user).name(name).build());
 
-            ProductStats stats = productStatsRepository.saveAndFlush(ProductStatsTestData.simpleProductStats(product));
+            ProductStats stats = productStatsRepository.saveAndFlush(ProductStatsFixture.builder().product(product).build());
 
             products.add(product);
 
@@ -244,7 +245,7 @@ public class ProductIntegrationTest {
         @BeforeEach
         public void setUp(){
 
-            this.user = userRepository.saveAndFlush(UserTestData.simpleUser());
+            this.user = userRepository.saveAndFlush(UserFixture.builder().build());
 
             setUpCategories("Food", CategoryStatus.ACTIVE);
 
@@ -254,7 +255,7 @@ public class ProductIntegrationTest {
 
         public void setUpCategories(String name, CategoryStatus status){
 
-            Category category = categoryRepository.saveAndFlush(CategoryTestData.customCategory(name, status));
+            Category category = categoryRepository.saveAndFlush(CategoryFixture.builder().name(name).status(status).build());
 
             categories.add(category);
         }
@@ -265,7 +266,7 @@ public class ProductIntegrationTest {
 
             // ARRANGE
 
-            ProductRegisterRequest request = ProductTestData.productRegisterRequest(this.user);
+            ProductRegisterRequest request = ProductDTOFixture.productRegisterRequest(this.user);
 
             // ACT
 
@@ -297,9 +298,9 @@ public class ProductIntegrationTest {
 
             // ARRANGE
 
-            productRepository.saveAndFlush(ProductTestData.simpleProduct(this.user));
+            productRepository.saveAndFlush(ProductFixture.builder().vendor(this.user).build());
 
-            ProductRegisterRequest request = ProductTestData.productRegisterRequest(this.user);
+            ProductRegisterRequest request = ProductDTOFixture.productRegisterRequest(this.user);
 
             // ACT & ASSERT
 
@@ -316,7 +317,7 @@ public class ProductIntegrationTest {
 
             Long nonExistingCategoryId = 999L;
 
-            ProductRegisterRequest request = ProductTestData.productRegisterRequest(this.user, nonExistingCategoryId);
+            ProductRegisterRequest request = ProductDTOFixture.productRegisterRequest(this.user, nonExistingCategoryId);
 
             // ACT & ASSERT
 
@@ -348,7 +349,7 @@ public class ProductIntegrationTest {
         @BeforeEach
         public void setUp(){
 
-            this.user = userRepository.saveAndFlush(UserTestData.simpleUser());
+            this.user = userRepository.saveAndFlush(UserFixture.builder().build());
 
 
 
@@ -360,7 +361,7 @@ public class ProductIntegrationTest {
 
             // ARRANGE
 
-            this.product = productRepository.saveAndFlush(ProductTestData.customProduct(this.user).status(ProductStatus.AVAILABLE).build());
+            this.product = productRepository.saveAndFlush(ProductFixture.builder().vendor(this.user).status(ProductStatus.AVAILABLE).build());
 
             // ACT
 
@@ -380,7 +381,7 @@ public class ProductIntegrationTest {
 
             // ARRANGE
 
-            this.product = productRepository.saveAndFlush(ProductTestData.customProduct(this.user).status(ProductStatus.UNAVAILABLE).build());
+            this.product = productRepository.saveAndFlush(ProductFixture.builder().vendor(this.user).status(ProductStatus.UNAVAILABLE).build());
 
 
             // ACT
@@ -407,9 +408,9 @@ public class ProductIntegrationTest {
 
             // ARRANGE
 
-            User user = userRepository.saveAndFlush(UserTestData.simpleUser());
+            User user = userRepository.saveAndFlush(UserFixture.builder().build());
 
-            Product product = productRepository.saveAndFlush(ProductTestData.simpleProduct(user));
+            Product product = productRepository.saveAndFlush(ProductFixture.builder().vendor(user).build());
 
             // ACT
 
@@ -438,7 +439,7 @@ public class ProductIntegrationTest {
         @BeforeEach
         public void setUp(){
 
-            this.user = userRepository.saveAndFlush(UserTestData.simpleUser());
+            this.user = userRepository.saveAndFlush(UserFixture.builder().build());
 
         }
 
@@ -448,9 +449,9 @@ public class ProductIntegrationTest {
 
             // ARRANGE
 
-            this.product = productRepository.saveAndFlush(ProductTestData.customProduct(this.user).stock(10).status(ProductStatus.UNAVAILABLE).build());
+            this.product = productRepository.saveAndFlush(ProductFixture.builder().vendor(this.user).stock(10).status(ProductStatus.UNAVAILABLE).build());
 
-            ProductStockIncreaseRequest request = ProductTestData.productStockIncreaseRequest(this.quantity);
+            ProductStockIncreaseRequest request = ProductDTOFixture.productStockIncreaseRequest(this.quantity);
 
             Integer expectedQuantity = this.product.getStock() + this.quantity;
 
@@ -474,9 +475,9 @@ public class ProductIntegrationTest {
 
             // ARRANGE
 
-            this.product = productRepository.saveAndFlush(ProductTestData.customProduct(this.user).stock(0).status(ProductStatus.OUT_OF_STOCK).build());
+            this.product = productRepository.saveAndFlush(ProductFixture.builder().vendor(this.user).stock(0).status(ProductStatus.OUT_OF_STOCK).build());
 
-            ProductStockIncreaseRequest request = ProductTestData.productStockIncreaseRequest(this.quantity);
+            ProductStockIncreaseRequest request = ProductDTOFixture.productStockIncreaseRequest(this.quantity);
 
             Integer expectedQuantity = this.product.getStock() + this.quantity;
 
@@ -516,7 +517,7 @@ public class ProductIntegrationTest {
         @BeforeEach
         public void setUp(){
 
-            this.user = userRepository.saveAndFlush(UserTestData.simpleUser());
+            this.user = userRepository.saveAndFlush(UserFixture.builder().build());
 
         }
 
@@ -526,7 +527,7 @@ public class ProductIntegrationTest {
 
             // ARRANGE
 
-            this.product = productRepository.saveAndFlush(ProductTestData.customProduct(this.user).status(ProductStatus.WAITING_APPROVAL).stock(0).build());
+            this.product = productRepository.saveAndFlush(ProductFixture.builder().vendor(this.user).status(ProductStatus.WAITING_APPROVAL).stock(0).build());
 
             // ACT
 
@@ -550,7 +551,7 @@ public class ProductIntegrationTest {
 
             // ARRANGE
 
-            this.product = productRepository.saveAndFlush(ProductTestData.customProduct(this.user).status(ProductStatus.WAITING_APPROVAL).stock(1).build());
+            this.product = productRepository.saveAndFlush(ProductFixture.builder().vendor(this.user).status(ProductStatus.WAITING_APPROVAL).stock(1).build());
 
             // ACT
 

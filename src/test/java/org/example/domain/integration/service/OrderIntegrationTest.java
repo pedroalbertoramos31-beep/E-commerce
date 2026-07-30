@@ -7,7 +7,7 @@ import org.example.domain.cart.CartRepository;
 import org.example.domain.cart_item.CartItem;
 import org.example.domain.cart_item.CartItemQuery;
 import org.example.domain.cart_item.CartItemRepository;
-import org.example.domain.factory.*;
+import org.example.domain.fixture.entity.*;
 import org.example.domain.order.*;
 import org.example.domain.order.dto.response.OrderPurchaseResponse;
 import org.example.domain.order.dto.response.OrderResponse;
@@ -75,9 +75,9 @@ public class OrderIntegrationTest {
         @BeforeEach
         void setUp(){
 
-            this.user = userRepository.saveAndFlush(UserTestData.simpleUser());
+            this.user = userRepository.saveAndFlush(UserFixture.builder().build());
 
-            this.cart = cartRepository.saveAndFlush(CartTestData.simpleCart(user));
+            this.cart = cartRepository.saveAndFlush(CartFixture.builder().user(user).build());
 
         }
 
@@ -194,7 +194,7 @@ public class OrderIntegrationTest {
 
         private Product setupProduct(String name, BigDecimal price, Integer stock) {
 
-            Product product = ProductTestData.customProduct(this.user)
+            Product product = ProductFixture.builder().vendor(this.user)
                     .name(name)
                     .price(price)
                     .stock(stock)
@@ -202,9 +202,9 @@ public class OrderIntegrationTest {
 
             productRepository.saveAndFlush(product);
 
-            productStatsRepository.saveAndFlush(ProductStatsTestData.simpleProductStats(product));
+            productStatsRepository.saveAndFlush(ProductStatsFixture.builder().product(product).build());
 
-            CartItem item = cartItemRepository.saveAndFlush(CartItemTestData.simpleCartItem(product, this.cart));
+            CartItem item = cartItemRepository.saveAndFlush(CartItemFixture.builder().product(product).cart(this.cart).build());
 
             this.items.add(item);
 
@@ -273,10 +273,10 @@ public class OrderIntegrationTest {
         @BeforeEach
         public void setUp(){
 
-            this.user = userRepository.saveAndFlush(UserTestData.simpleUser());
+            this.user = userRepository.saveAndFlush(UserFixture.builder().build());
 
-            Order order1 = orderRepository.saveAndFlush(OrderTestData.simpleOrder(this.user, BigDecimal.valueOf(100)));
-            Order order2 = orderRepository.saveAndFlush(OrderTestData.simpleOrder(this.user, BigDecimal.valueOf(50)));
+            Order order1 = orderRepository.saveAndFlush(OrderFixture.builder().user(this.user).totalAmount(BigDecimal.valueOf(100)).build());
+            Order order2 = orderRepository.saveAndFlush(OrderFixture.builder().user(this.user).totalAmount(BigDecimal.valueOf(50)).build());
 
             this.orders.add(order1);
             this.orders.add(order2);
@@ -322,8 +322,8 @@ public class OrderIntegrationTest {
         @BeforeEach
         public void setUp() {
 
-            this.user = userRepository.saveAndFlush(UserTestData.simpleUser());
-            this.order = orderRepository.saveAndFlush(OrderTestData.simpleOrder(this.user, BigDecimal.valueOf(100)));
+            this.user = userRepository.saveAndFlush(UserFixture.builder().build());
+            this.order = orderRepository.saveAndFlush(OrderFixture.builder().user(this.user).totalAmount(BigDecimal.valueOf(100)).build());
 
         }
 

@@ -1,15 +1,13 @@
-package org.example.domain.factory;
+package org.example.domain.fixture.entity;
 
 import org.example.domain.product.Product;
 import org.example.domain.product.ProductStatus;
-import org.example.domain.product.dto.request.ProductRegisterRequest;
-import org.example.domain.product.dto.request.ProductStockIncreaseRequest;
 import org.example.domain.user.User;
 
 import java.math.BigDecimal;
 import java.util.Set;
 
-public class ProductTestData {
+public class ProductFixture {
 
     public static final String DEFAULT_NAME = "Apple";
     public static final BigDecimal DEFAULT_PRICE = BigDecimal.valueOf(1);
@@ -17,12 +15,8 @@ public class ProductTestData {
     public static final ProductStatus DEFAULT_STATUS = ProductStatus.AVAILABLE;
     public static final Set<Long> DEFAULT_CATEGORY = Set.of(1L);
 
-    public static ProductBuilder customProduct(User user) {
-        return new ProductBuilder(user);
-    }
-
-    public static Product simpleProduct(User user) {
-        return new ProductBuilder(user).build();
+    public static ProductBuilder builder() {
+        return new ProductBuilder();
     }
 
     public static class ProductBuilder {
@@ -32,11 +26,7 @@ public class ProductTestData {
         private Integer stock = DEFAULT_STOCK;
         private ProductStatus status = DEFAULT_STATUS;
 
-        private final User user;
-
-        private ProductBuilder(User user) {
-            this.user = user;
-        }
+        private User vendor = UserFixture.builder().build();
 
         public ProductBuilder name(String name) {
             this.name = name;
@@ -58,35 +48,20 @@ public class ProductTestData {
             return this;
         }
 
+        public ProductBuilder vendor(User vendor) {
+            this.vendor = vendor;
+            return this;
+        }
+
         public Product build() {
 
-            Product product = Product.create(name, price, stock, user);
+            Product product = Product.create(name, price, stock, vendor);
+
             product.changeState(status);
 
             return product;
         }
     }
 
-    public static ProductRegisterRequest productRegisterRequest(User user){
-        return new ProductRegisterRequest(
-                DEFAULT_NAME,
-                DEFAULT_PRICE,
-                DEFAULT_STOCK,
-                DEFAULT_CATEGORY
-        );
-    }
-
-    public static ProductRegisterRequest productRegisterRequest(User user, Long categoryId){
-        return new ProductRegisterRequest(
-                DEFAULT_NAME,
-                DEFAULT_PRICE,
-                DEFAULT_STOCK,
-                Set.of(categoryId)
-        );
-    }
-
-    public static ProductStockIncreaseRequest productStockIncreaseRequest(Integer quantity){
-        return new ProductStockIncreaseRequest(quantity);
-    }
 
 }

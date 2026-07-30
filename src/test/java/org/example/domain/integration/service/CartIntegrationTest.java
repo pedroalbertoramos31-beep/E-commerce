@@ -10,10 +10,10 @@ import org.example.domain.cart.dto.response.CartItemsResponse;
 import org.example.domain.cart_item.CartItem;
 import org.example.domain.cart_item.CartItemRepository;
 import org.example.domain.cart_item.dto.response.CartItemResponse;
-import org.example.domain.factory.CartItemTestData;
-import org.example.domain.factory.CartTestData;
-import org.example.domain.factory.ProductTestData;
-import org.example.domain.factory.UserTestData;
+import org.example.domain.fixture.entity.CartFixture;
+import org.example.domain.fixture.entity.CartItemFixture;
+import org.example.domain.fixture.entity.ProductFixture;
+import org.example.domain.fixture.entity.UserFixture;
 import org.example.domain.product.Product;
 import org.example.domain.product.ProductQuery;
 import org.example.domain.product.ProductRepository;
@@ -65,10 +65,10 @@ public class CartIntegrationTest {
         @BeforeEach
         void setUp(){
 
-            this.user = userRepository.saveAndFlush(UserTestData.simpleUser());
-            this.cart = cartRepository.saveAndFlush(CartTestData.simpleCart(user));
-            this.product = productRepository.saveAndFlush(ProductTestData.simpleProduct(user));
-            this.items.add(cartItemRepository.saveAndFlush(CartItemTestData.simpleCartItem(product, cart)));
+            this.user = userRepository.saveAndFlush(UserFixture.builder().build());
+            this.cart = cartRepository.saveAndFlush(CartFixture.builder().user(user).build());
+            this.product = productRepository.saveAndFlush(ProductFixture.builder().vendor(user).build());
+            this.items.add(cartItemRepository.saveAndFlush(CartItemFixture.builder().product(product).cart(cart).build()));
 
         }
 

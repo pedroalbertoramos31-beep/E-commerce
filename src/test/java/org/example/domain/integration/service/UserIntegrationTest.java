@@ -2,7 +2,8 @@ package org.example.domain.integration.service;
 
 import org.example.domain.cart.Cart;
 import org.example.domain.cart.CartQuery;
-import org.example.domain.factory.UserTestData;
+import org.example.domain.fixture.dto.UserDTOFixture;
+import org.example.domain.fixture.entity.UserFixture;
 import org.example.domain.user.*;
 import org.example.domain.user.dto.request.UserAddBalanceRequest;
 import org.example.domain.user.dto.request.UserRegisterRequest;
@@ -50,7 +51,7 @@ public class UserIntegrationTest {
 
             // ARRANGE
 
-            this.user = userRepository.saveAndFlush(UserTestData.simpleUser());
+            this.user = userRepository.saveAndFlush(UserFixture.builder().build());
 
             // ACT
 
@@ -95,7 +96,7 @@ public class UserIntegrationTest {
 
             // ARRANGE
 
-            UserRegisterRequest request = UserTestData.userRegisterRequest();
+            UserRegisterRequest request = UserDTOFixture.userRegisterRequest();
 
             // ACT
 
@@ -121,7 +122,7 @@ public class UserIntegrationTest {
 
             // ARRANGE
 
-            UserRegisterRequest request = UserTestData.userRegisterRequest();
+            UserRegisterRequest request = UserDTOFixture.userRegisterRequest();
 
             // ACT
 
@@ -143,7 +144,7 @@ public class UserIntegrationTest {
         @BeforeEach
         void setUp(){
 
-            this.user = userRepository.saveAndFlush(UserTestData.simpleUser());
+            this.user = userRepository.saveAndFlush(UserFixture.builder().build());
 
         }
 
@@ -153,7 +154,7 @@ public class UserIntegrationTest {
 
             // ARRANGE
 
-            UserAddBalanceRequest request = UserTestData.userAddBalanceRequest();
+            UserAddBalanceRequest request = UserDTOFixture.userAddBalanceRequest();
 
             BigDecimal initialBalance = this.user.getBalance();
 
@@ -192,7 +193,7 @@ public class UserIntegrationTest {
 
             UserRole role = UserRole.ADMIN;
 
-            User user = userRepository.saveAndFlush(UserTestData.simpleUser());
+            User user = userRepository.saveAndFlush(UserFixture.builder().build());
 
             // ACT
 
@@ -219,7 +220,7 @@ public class UserIntegrationTest {
 
             UserRole role = UserRole.USER;
 
-            User user = userRepository.saveAndFlush(UserTestData.simpleUser(UserRole.ADMIN));
+            User user = userRepository.saveAndFlush(UserFixture.builder().role(UserRole.ADMIN).build());
 
             // ACT & ASSERT
 
