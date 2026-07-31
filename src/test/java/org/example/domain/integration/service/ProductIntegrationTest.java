@@ -40,9 +40,9 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.example.domain.assertion.CategoryTestAssertion.assertCategoryResponse;
-import static org.example.domain.assertion.ProductStatsTestAssertion.assertProductStatsResponse;
-import static org.example.domain.assertion.ProductTestAssertion.*;
+import static org.example.domain.assertion.service.CategoryTestAssertion.assertCategoryResponse;
+import static org.example.domain.assertion.service.ProductStatsTestAssertion.assertProductStatsResponse;
+import static org.example.domain.assertion.service.ProductTestAssertion.*;
 
 @SpringBootTest
 @Transactional

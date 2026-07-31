@@ -1,4 +1,4 @@
-package org.example.domain.assertion;
+package org.example.domain.assertion.service;
 
 import org.example.domain.category.Category;
 import org.example.domain.category.dto.response.CategoryResponse;

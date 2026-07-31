@@ -1,4 +1,4 @@
-package org.example.domain.assertion;
+package org.example.domain.assertion.service;
 
 import org.example.domain.product.Product;
 import org.example.domain.product.dto.response.ProductCardResponse;
@@ -7,7 +7,7 @@ import org.example.domain.product.dto.response.ProductStatusResponse;
 import org.example.domain.product_stats.ProductStats;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.example.domain.assertion.ProductStatsTestAssertion.assertProductStatsResponse;
+import static org.example.domain.assertion.service.ProductStatsTestAssertion.assertProductStatsResponse;
 
 public class ProductTestAssertion {
 

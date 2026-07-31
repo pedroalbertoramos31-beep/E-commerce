@@ -1,4 +1,4 @@
-package org.example.domain.assertion;
+package org.example.domain.assertion.service;
 
 import org.example.domain.product_stats.ProductStats;
 import org.example.domain.product_stats.dto.response.ProductStatsResponse;
