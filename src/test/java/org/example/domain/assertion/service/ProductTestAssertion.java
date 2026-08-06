@@ -23,7 +23,7 @@ public class ProductTestAssertion {
 
         assertThat(response.status()).isEqualTo(product.getStatus());
 
-        assertThat(response.vendor().getId()).isEqualTo(product.getVendor().getId());
+        assertThat(response.vendor().id()).isEqualTo(product.getVendor().getId());
 
     }
 

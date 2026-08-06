@@ -1,7 +1,7 @@
 package org.example.domain.product.dto.response;
 
 import org.example.domain.product.ProductStatus;
-import org.example.domain.user.User;
+import org.example.domain.user.dto.response.UserSummaryResponse;
 
 import java.math.BigDecimal;
 
@@ -13,5 +13,5 @@ public record ProductResponse(
         Integer stock,
 
         ProductStatus state,
-        User vendor
+        UserSummaryResponse vendor
 ) {}
