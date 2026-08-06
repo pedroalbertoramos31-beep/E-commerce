@@ -156,9 +156,7 @@ public class UserIntegrationTest {
 
             UserAddBalanceRequest request = UserDTOFixture.userAddBalanceRequest();
 
-            BigDecimal initialBalance = this.user.getBalance();
-
-            BigDecimal expectedBalance = initialBalance.add(request.balance());
+            BigDecimal expectedBalance = this.user.getBalance().add(request.balance());
 
             // ACT
 
@@ -166,15 +164,21 @@ public class UserIntegrationTest {
 
             // ASSERT - Response
 
-            assertThat(this.user.getId()).isEqualTo(response.user().id());
+            UserBalanceResponse expectedResponse = new UserBalanceResponse(
+                    expectedBalance
+            );
 
-            assertThat(expectedBalance).isEqualTo(response.balance());
+            assertThat(expectedResponse).isEqualTo(response);
 
             // ASSERT - Persistence
 
+            User expectedPersistence = UserFixture.builder()
+                    .balance(expectedBalance)
+                    .build();
+
             this.user = userQuery.findById(this.user.getId());
 
-            assertThat(this.user.getBalance()).isEqualTo(expectedBalance);
+            assertThat(expectedPersistence.getBalance()).isEqualTo(this.user.getBalance());
 
         }
     }
