@@ -1,6 +1,6 @@
 package org.example.domain.product_review.dto.response;
 
-import org.example.domain.user.User;
+import org.example.domain.user.dto.response.UserSummaryResponse;
 
 public record ProductReviewResponse(
 
@@ -10,6 +10,6 @@ public record ProductReviewResponse(
 
         Long productId,
 
-        User user
+        UserSummaryResponse user
 ) {
 }

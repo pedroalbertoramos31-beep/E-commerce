@@ -200,7 +200,7 @@ public class ProductReviewIntegrationTest {
 
             assertThat(response.productId()).isEqualTo(review.getProduct().getId());
 
-            assertThat(response.user().getId()).isEqualTo(review.getUser().getId());
+            assertThat(response.user().id()).isEqualTo(review.getUser().getId());
 
         }
 
@@ -258,7 +258,7 @@ public class ProductReviewIntegrationTest {
             // ASSERT
 
             assertThat(response.getContent())
-                    .extracting(content -> content.user().getUsername())
+                    .extracting(content -> content.user().username())
                     .containsExactlyInAnyOrder("Mordecai", "John Doe", "Schofield");
 
             assertPaginationContent(response);
