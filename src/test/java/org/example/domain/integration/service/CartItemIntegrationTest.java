@@ -125,9 +125,7 @@ public class CartItemIntegrationTest {
 
             assertThat(response.quantity()).isEqualTo(item.getQuantity());
 
-            assertThat(response.cart().getId()).isEqualTo(item.getCart().getId());
-
-            assertThat(response.product().getId()).isEqualTo(item.getProduct().getId());
+            assertThat(response.product().id()).isEqualTo(item.getProduct().getId());
 
         }
 

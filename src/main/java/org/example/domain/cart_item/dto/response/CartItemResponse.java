@@ -1,15 +1,13 @@
 package org.example.domain.cart_item.dto.response;
 
-import org.example.domain.cart.Cart;
-import org.example.domain.product.Product;
+import org.example.domain.product.dto.response.ProductCardResponse;
 
 public record CartItemResponse(
 
         Long id,
         Integer quantity,
 
-        Product product,
-        Cart cart
+        ProductCardResponse product
 
         ) {
 }
