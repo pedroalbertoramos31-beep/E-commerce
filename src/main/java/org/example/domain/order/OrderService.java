@@ -67,7 +67,7 @@ public class OrderService {
 
         user.subtractBalance(order.getTotalAmount());
 
-        return orderMapper.toPurchaseResponse(order, orderItems, user);
+        return orderMapper.toPurchaseResponse(order, orderItems);
     }
 
     @Transactional

@@ -1,10 +1,9 @@
 package org.example.domain.order;
 
-import org.example.domain.order.dto.response.OrderResponse;
 import org.example.domain.order.dto.response.OrderPurchaseResponse;
+import org.example.domain.order.dto.response.OrderResponse;
 import org.example.domain.order_item.OrderItem;
 import org.example.domain.order_item.OrderItemMapper;
-import org.example.domain.user.User;
 import org.example.domain.user.UserMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,9 +14,8 @@ import java.util.List;
 public interface OrderMapper {
 
     @Mapping(source = "order.id", target = "id")
-    @Mapping(source = "user", target = "user")
     @Mapping(source = "orderItems", target = "items")
-    OrderPurchaseResponse toPurchaseResponse(Order order, List<OrderItem> orderItems, User user);
+    OrderPurchaseResponse toPurchaseResponse(Order order, List<OrderItem> orderItems);
 
     OrderResponse toHistoryResponse(Order order);
 

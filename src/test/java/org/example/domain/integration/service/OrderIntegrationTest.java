@@ -222,8 +222,6 @@ public class OrderIntegrationTest {
 
             assertThat(response.totalAmount()).isEqualByComparingTo(expectedTotal);
 
-            assertThat(response.user().id()).isEqualTo(this.user.getId());
-
             assertOrderItemResponse(response.items().get(0), this.items.get(0));
 
             assertOrderItemResponse(response.items().get(1), this.items.get(1));
