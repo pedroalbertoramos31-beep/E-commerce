@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.domain.cart.CartQuery;
 import org.example.domain.cart.CartRepository;
-import org.example.domain.cart_item.dto.request.CartItemUpsertRequest;
+import org.example.domain.cart_item.dto.request.CartItemQuantityRequest;
 import org.example.domain.cart_item.dto.response.CartItemResponse;
 import org.example.domain.product.Product;
 import org.example.domain.product.ProductQuery;
@@ -36,7 +36,7 @@ public class CartItemService {
 
 
     @Transactional
-    public CartItemResponse upsertCartItem(CartItemUpsertRequest request, Long productId, Long userId) {
+    public CartItemResponse upsertCartItem(CartItemQuantityRequest request, Long productId, Long userId) {
 
         Product product = productQuery.findById(productId);
 
@@ -52,7 +52,7 @@ public class CartItemService {
 
     // PRIVATE METHODS
 
-    private CartItem upsertItem(List<CartItem> items, CartItemUpsertRequest request, Product product, Long userId){
+    private CartItem upsertItem(List<CartItem> items, CartItemQuantityRequest request, Product product, Long userId){
 
         Optional<CartItem> existingCartItem = extractItem(product.getId(), items);
 

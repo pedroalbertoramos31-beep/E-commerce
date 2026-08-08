@@ -3,7 +3,7 @@ package org.example.domain.cart_item;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import org.example.domain.cart_item.dto.request.CartItemUpsertRequest;
+import org.example.domain.cart_item.dto.request.CartItemQuantityRequest;
 import org.example.domain.cart_item.dto.response.CartItemResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public class CartItemController {
     @PostMapping
     public ResponseEntity<CartItemResponse> upsertCartItem(
 
-            @Valid @RequestBody CartItemUpsertRequest request,
+            @Valid @RequestBody CartItemQuantityRequest request,
             @PathVariable @Positive Long productId,
             @AuthenticationPrincipal(expression = "id") Long userId){
 

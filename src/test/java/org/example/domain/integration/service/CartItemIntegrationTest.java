@@ -8,7 +8,7 @@ import org.example.domain.cart_item.CartItem;
 import org.example.domain.cart_item.CartItemQuery;
 import org.example.domain.cart_item.CartItemRepository;
 import org.example.domain.cart_item.CartItemService;
-import org.example.domain.cart_item.dto.request.CartItemUpsertRequest;
+import org.example.domain.cart_item.dto.request.CartItemQuantityRequest;
 import org.example.domain.cart_item.dto.response.CartItemResponse;
 import org.example.domain.category.CategoryRepository;
 import org.example.domain.fixture.dto.CartItemDTOFixture;
@@ -77,7 +77,7 @@ public class CartItemIntegrationTest {
 
             // ARRANGE
 
-            CartItemUpsertRequest request = CartItemDTOFixture.cartItemUpsertRequest(3);
+            CartItemQuantityRequest request = CartItemDTOFixture.cartItemUpsertRequest(3);
 
             // ACT
 
@@ -101,7 +101,7 @@ public class CartItemIntegrationTest {
 
             CartItem existingItem = cartItemRepository.saveAndFlush(CartItemFixture.builder().product(this.product).cart(this.cart).build());
 
-            CartItemUpsertRequest request = CartItemDTOFixture.cartItemUpsertRequest(1);
+            CartItemQuantityRequest request = CartItemDTOFixture.cartItemUpsertRequest(1);
 
             // ACT
 
@@ -125,7 +125,7 @@ public class CartItemIntegrationTest {
 
             assertThat(response.quantity()).isEqualTo(item.getQuantity());
 
-            assertThat(response.product().id()).isEqualTo(item.getProduct().getId());
+            assertThat(response.productId()).isEqualTo(item.getProduct().getId());
 
         }
 
