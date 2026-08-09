@@ -54,8 +54,12 @@ public class CartItem extends Auditable {
 
     /* METHODS */
 
-    public void updateQuantity (Integer quantity){
+    public void changeQuantity(Integer quantity){
         this.quantity = quantity;
+    }
+
+    public void addQuantity(Integer quantity){
+        this.quantity += quantity;
     }
 
 }

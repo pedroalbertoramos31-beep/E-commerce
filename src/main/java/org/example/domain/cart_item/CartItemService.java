@@ -8,6 +8,7 @@ import org.example.domain.cart_item.dto.request.CartItemQuantityRequest;
 import org.example.domain.cart_item.dto.response.CartItemResponse;
 import org.example.domain.product.Product;
 import org.example.domain.product.ProductQuery;
+import org.example.domain.product.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class CartItemService {
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
+    private final ProductRepository productRepository;
 
     private final CartQuery cartQuery;
     private final CartItemQuery cartItemQuery;
@@ -34,17 +36,31 @@ public class CartItemService {
         cartItemQuery.deleteByProductIdAndCartId(productId, userId);
     }
 
-
     @Transactional
-    public CartItemResponse upsertCartItem(CartItemQuantityRequest request, Long productId, Long userId) {
+    public CartItemResponse addToCart(CartItemQuantityRequest request, Long productId, Long userId) {
 
         Product product = productQuery.findById(productId);
 
         List<CartItem> items = cartItemQuery.getByUserId(userId);
 
-        productQuery.verifyAvailableStock(product.getStock(), request.quantity());
+        Optional<CartItem> optionalCartItem = extractItem(product.getId(), items);
 
-        CartItem item = upsertItem(items, request, product, userId);
+        CartItem item = upsertItem(items, request.quantity(), product, userId, optionalCartItem);
+
+        return cartItemMapper.toCartItemResponse(item);
+
+    }
+
+    @Transactional
+    public CartItemResponse updateItemQuantity(CartItemQuantityRequest request, Long productId, Long userId){
+
+        Product product = productQuery.findById(productId);
+
+        List<CartItem> items = cartItemQuery.getByUserId(userId);
+
+        Optional<CartItem> optionalCartItem = extractItem(product.getId(), items);
+
+        CartItem item = changeQuantity(optionalCartItem, request.quantity(), product);
 
         return cartItemMapper.toCartItemResponse(item);
 
@@ -52,21 +68,40 @@ public class CartItemService {
 
     // PRIVATE METHODS
 
-    private CartItem upsertItem(List<CartItem> items, CartItemQuantityRequest request, Product product, Long userId){
+    private CartItem changeQuantity(Optional<CartItem> optionalCartItem, Integer quantity, Product product){
 
-        Optional<CartItem> existingCartItem = extractItem(product.getId(), items);
+        CartItem item = cartItemQuery.verifyIsPresent(optionalCartItem);
+
+        productQuery.verifyAvailableStock(product.getStock(), quantity + item.getQuantity());
+
+        item.changeQuantity(quantity);
+
+        return item;
+
+    }
+
+    private CartItem upsertItem(List<CartItem> items, Integer quantity, Product product, Long userId, Optional<CartItem> optionalCartItem){
 
         CartItem item;
 
-        if (existingCartItem.isPresent()){
+        if (optionalCartItem.isPresent()){
 
-            item = existingCartItem.get();
+            item = optionalCartItem.get();
 
-            item.updateQuantity(request.quantity());
+            Integer totalQuantity = item.getQuantity() + quantity;
+
+            productQuery.verifyAvailableStock(product.getStock(), totalQuantity);
+
+            item.addQuantity(quantity);
 
         } else {
 
-            item = CartItem.create(request.quantity(), product, cartRepository.getReferenceById(userId));
+            productQuery.verifyAvailableStock(product.getStock(), quantity);
+
+            item = CartItem.create(
+                    quantity,
+                    productRepository.getReferenceById(product.getId()),
+                    cartRepository.getReferenceById(userId));
 
             cartItemRepository.save(item);
 

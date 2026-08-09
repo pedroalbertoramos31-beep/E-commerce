@@ -18,15 +18,31 @@ public class CartItemController {
     CartItemService cartItemService;
 
     @PostMapping
-    public ResponseEntity<CartItemResponse> upsertCartItem(
+    public ResponseEntity<CartItemResponse> addToCart(
 
             @Valid @RequestBody CartItemQuantityRequest request,
             @PathVariable @Positive Long productId,
-            @AuthenticationPrincipal(expression = "id") Long userId){
+            @AuthenticationPrincipal(expression = "id") Long userId
+    ){
 
-        CartItemResponse response = cartItemService.upsertCartItem(request, productId, userId);
+        CartItemResponse response = cartItemService.addToCart(request, productId, userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+
+    }
+
+    @PatchMapping
+    public ResponseEntity<CartItemResponse> updateItemQuantity(
+
+            @Valid @RequestBody CartItemQuantityRequest request,
+            @PathVariable @Positive Long productId,
+            @AuthenticationPrincipal(expression = "id") Long userId
+    ){
+
+        CartItemResponse response = cartItemService.updateItemQuantity(request, productId, userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
     }
 
     @DeleteMapping("/item/{productId}")

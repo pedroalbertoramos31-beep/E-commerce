@@ -11,7 +11,6 @@ import org.example.domain.cart_item.CartItemService;
 import org.example.domain.cart_item.dto.request.CartItemQuantityRequest;
 import org.example.domain.cart_item.dto.response.CartItemResponse;
 import org.example.domain.category.CategoryRepository;
-import org.example.domain.fixture.dto.CartItemDTOFixture;
 import org.example.domain.fixture.entity.CartFixture;
 import org.example.domain.fixture.entity.CartItemFixture;
 import org.example.domain.fixture.entity.ProductFixture;
@@ -32,6 +31,8 @@ import org.springframework.test.context.TestPropertySource;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.example.domain.assertion.service.CartItemTestAssertion.assertCartItemPersistence;
+import static org.example.domain.assertion.service.CartItemTestAssertion.assertCartItemResponse;
 
 @SpringBootTest
 @Transactional
@@ -52,80 +53,155 @@ public class CartItemIntegrationTest {
 
 
     @Nested
-    @DisplayName("Upsert Cart Item")
-    public class UpsertCartItemTest{
+    @DisplayName("Add Product To Cart")
+    public class AddProductToCart{
 
         User user;
-        Cart cart;
         Product product;
+        Cart cart;
 
         @BeforeEach
-        public void setUp(){
+        public void setUp() {
 
-            this.user = userRepository.saveAndFlush(UserFixture.builder().build());
+            this.user = userRepository.save(UserFixture.builder().build());
 
-            this.cart = cartRepository.saveAndFlush(CartFixture.builder().user(this.user).build());
+            this.cart = cartRepository.save(CartFixture.builder().user(user).build());
 
-            this.product = productRepository.saveAndFlush(ProductFixture.builder().vendor(this.user).build());
-
-
-        }
-
-        @Test
-        @DisplayName("Success; item is added to cart")
-        public void success_ItemAdded(){
-
-            // ARRANGE
-
-            CartItemQuantityRequest request = CartItemDTOFixture.cartItemUpsertRequest(3);
-
-            // ACT
-
-            CartItemResponse response = cartItemService.upsertCartItem(request, product.getId(), this.cart.getId());
-
-            // ASSERT
-
-            assertThat(response.quantity()).isEqualTo(request.quantity());
-
-            CartItem addedItem = cartItemQuery.findByProductIdAndCartId(product.getId(), this.user.getId());
-
-            assertCartItemResponse(response, addedItem);
+            this.product = productRepository.save(ProductFixture.builder().vendor(user).build());
 
         }
 
         @Test
-        @DisplayName("Success; cart item quantity is updated")
-        public void success_CartItemQuantityUpdated(){
+        @DisplayName("Success; add product to cart")
+        public void success_ProductIsAddedToCart(){
 
             // ARRANGE
 
-            CartItem existingItem = cartItemRepository.saveAndFlush(CartItemFixture.builder().product(this.product).cart(this.cart).build());
+            CartItemQuantityRequest request = new CartItemQuantityRequest(5);
 
-            CartItemQuantityRequest request = CartItemDTOFixture.cartItemUpsertRequest(1);
+            CartItemResponse expectedResponse = new CartItemResponse(
+                    -1L,
+                    product.getId(),
+                    request.quantity()
+            );
+
+            CartItem expectedItemPersisted = CartItemFixture.builder()
+                    .cart(cart)
+                    .product(product)
+                    .quantity(request.quantity())
+                    .build();
 
             // ACT
 
-            CartItemResponse response = cartItemService.upsertCartItem(request, existingItem.getProduct().getId(), existingItem.getCart().getId());
+            CartItemResponse response = cartItemService.addToCart(request, product.getId(), user.getId());
 
-            // ASSERT
+            // ASSERT - RESPONSE
 
-            assertThat(response.id()).isEqualTo(existingItem.getId());
+            assertCartItemResponse(expectedResponse, response);
 
-            assertThat(response.quantity()).isEqualTo(request.quantity());
+            // ASSERT - PERSISTENCE
 
-            CartItem updatedItem = cartItemQuery.findByProductIdAndCartId(this.product.getId(), this.user.getId());
+            CartItem item = cartItemQuery.findByProductIdAndCartId(product.getId(), cart.getId());
 
-            assertCartItemResponse(response, updatedItem);
+            assertCartItemPersistence(expectedItemPersisted, item);
 
         }
 
-        public void assertCartItemResponse(CartItemResponse response, CartItem item){
+        @Test
+        @DisplayName("Success; increase item quantity of an item in cart")
+        public void success_ItemQuantityInCartIsIncreased(){
 
-            assertThat(response.id()).isEqualTo(item.getId());
+            // ARRANGE
 
-            assertThat(response.quantity()).isEqualTo(item.getQuantity());
+            CartItemQuantityRequest request = new CartItemQuantityRequest(5);
 
-            assertThat(response.productId()).isEqualTo(item.getProduct().getId());
+            CartItem existingItem = cartItemRepository.saveAndFlush(CartItemFixture.builder()
+                            .cart(this.cart)
+                            .product(this.product)
+                            .quantity(5)
+                            .build());
+
+            CartItemResponse expectedResponse = new CartItemResponse(
+                    -1L,
+                    product.getId(),
+                    5 + request.quantity()
+            );
+
+            CartItem expectedItemPersisted = CartItemFixture.builder()
+                    .cart(this.cart)
+                    .product(this.product)
+                    .quantity(5 + request.quantity())
+                    .build();
+
+            // ACT
+
+            CartItemResponse response = cartItemService.addToCart(request, this.product.getId(), this.cart.getId());
+
+            // ASSERT - RESPONSE
+
+            assertCartItemResponse(expectedResponse, response);
+
+            // ASSERT - PERSISTENCE
+
+            CartItem item = cartItemQuery.findByProductIdAndCartId(product.getId(), cart.getId());
+
+            assertCartItemPersistence(expectedItemPersisted, item);
+
+        }
+
+
+    }
+
+    @Nested
+    @DisplayName("Change Item Quantity")
+    public class ChangeItemQuantity{
+
+
+        @Test
+        @DisplayName("Success: item quantity is changed")
+        public void success_ItemQuantityIsChanged(){
+
+            // ARRANGE
+
+            User user = userRepository.save(UserFixture.builder().build());
+
+            Cart cart = cartRepository.save(CartFixture.builder().user(user).build());
+
+            Product product = productRepository.save(ProductFixture.builder().vendor(user).build());
+
+            CartItem existingItem = cartItemRepository.save(CartItemFixture.builder()
+                    .cart(cart)
+                    .product(product)
+                    .quantity(1)
+                    .build());
+
+            CartItemQuantityRequest request = new CartItemQuantityRequest(5);
+
+            CartItemResponse expectedResponse = new CartItemResponse(
+                    -1L,
+                    product.getId(),
+                    5
+            );
+
+            CartItem expectedItemPersisted = CartItemFixture.builder()
+                    .cart(cart)
+                    .product(product)
+                    .quantity(5)
+                    .build();
+
+            // ACT
+
+            CartItemResponse response = cartItemService.updateItemQuantity(request, product.getId(), user.getId());
+
+            // ASSERT - RESPONSE
+
+            assertCartItemResponse(expectedResponse, response);
+
+            // ASSERT - PERSISTENCE
+
+            CartItem item = cartItemQuery.findByProductIdAndCartId(product.getId(), cart.getId());
+
+            assertCartItemPersistence(expectedItemPersisted, item);
 
         }
 
@@ -133,12 +209,12 @@ public class CartItemIntegrationTest {
 
     @Nested
     @DisplayName("Delete Cart Item")
-    public class DeleteCartItemTest{
+    public class DeleteCartItemTest {
 
 
         @Test
         @DisplayName("Success; deletes item from cart")
-        public void success_DeletesItem(){
+        public void success_DeletesItem() {
 
 
             // ARRANGE
@@ -162,10 +238,7 @@ public class CartItemIntegrationTest {
             assertThat(deleted).isEmpty();
 
 
-
         }
-
-
-
     }
 }
+
