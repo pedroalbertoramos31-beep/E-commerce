@@ -29,8 +29,12 @@ public class CartItemQuery {
 
     }
 
+    public List<CartItem> getByUserIdWithProduct(Long userId){
+        return cartItemRepository.getByUserIdWithProduct(userId);
+    }
+
     public List<CartItem> getByUserId(Long userId){
-        return cartItemRepository.getAllCartItems(userId);
+        return cartItemRepository.getByUserId(userId);
     }
 
     public void deleteByProductIdAndCartId(Long productId, Long cartId){

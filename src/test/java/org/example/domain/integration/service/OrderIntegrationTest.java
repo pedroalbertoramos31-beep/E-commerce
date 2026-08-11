@@ -246,7 +246,7 @@ public class OrderIntegrationTest {
 
         private void assertCartItemsAreDeleted(){
 
-            List<CartItem> items = cartItemQuery.getByUserId(this.user.getId());
+            List<CartItem> items = cartItemQuery.getByUserIdWithProduct(this.user.getId());
 
             assertThat(items).isEmpty();
 

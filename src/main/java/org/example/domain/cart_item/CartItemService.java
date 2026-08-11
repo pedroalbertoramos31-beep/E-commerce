@@ -41,7 +41,7 @@ public class CartItemService {
 
         Product product = productQuery.findById(productId);
 
-        List<CartItem> items = cartItemQuery.getByUserId(userId);
+        List<CartItem> items = cartItemQuery.getByUserIdWithProduct(userId);
 
         Optional<CartItem> optionalCartItem = extractItem(product.getId(), items);
 
@@ -56,7 +56,7 @@ public class CartItemService {
 
         Product product = productQuery.findById(productId);
 
-        List<CartItem> items = cartItemQuery.getByUserId(userId);
+        List<CartItem> items = cartItemQuery.getByUserIdWithProduct(userId);
 
         Optional<CartItem> optionalCartItem = extractItem(product.getId(), items);
 

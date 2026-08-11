@@ -8,6 +8,8 @@ import org.example.infrastructure.exception.error.ProductException;
 import org.example.infrastructure.exception.error.ReviewException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProductQuery {
@@ -44,6 +46,10 @@ public class ProductQuery {
         if (requestedQuantity > productQuantity){
             throw new ProductException.InsufficientStock();
         }
+    }
+
+    public List<Product> getByIdWithLock(List<Long> ids){
+        return productRepository.findAllByIdWithLock(ids);
     }
 
 }

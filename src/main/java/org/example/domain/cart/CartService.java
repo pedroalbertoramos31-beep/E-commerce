@@ -30,7 +30,7 @@ public class CartService {
 
         Cart cart = cartQuery.findById(userId);
 
-        List<CartItem> items = cartItemQuery.getByUserId(userId);
+        List<CartItem> items = cartItemQuery.getByUserIdWithProduct(userId);
 
         return cartMapper.toCartItemsResponse(cart, items);
     }

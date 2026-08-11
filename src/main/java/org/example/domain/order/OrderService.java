@@ -12,6 +12,7 @@ import org.example.domain.order_item.OrderItem;
 import org.example.domain.order_item.OrderItemRepository;
 import org.example.domain.product.Product;
 import org.example.domain.product.ProductQuery;
+import org.example.domain.product.ProductRepository;
 import org.example.domain.product_stats.ProductStats;
 import org.example.domain.product_stats.ProductStatsQuery;
 import org.example.domain.product_stats.ProductStatsRepository;
@@ -37,6 +38,7 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
     private final ProductStatsRepository productStatsRepository;
     private final UserRepository userRepository;
+    private final ProductRepository productRepository;
 
     private final CartQuery cartQuery;
     private final ProductQuery productQuery;
@@ -53,13 +55,17 @@ public class OrderService {
 
         User user = userQuery.findById(userId);
 
-        List<CartItem> cartItems = getItems(userId);
+        List<CartItem> items = getItems(userId);
 
-        Order order = createOrder(userId, user.getBalance(), cartItems);
+        Order order = createOrder(userId, user.getBalance(), items);
 
-        List<OrderItem> orderItems = createOrderItem(cartItems, order);
+        List<Long> productIds = extractProductIds(items);
 
-        List<Long> ids = extractIds(cartItems);
+        List<Product> products = productQuery.getByIdWithLock(productIds);
+
+        List<OrderItem> orderItems = createOrderItem(items, products, order);
+
+        List<Long> ids = extractIds(items);
 
         cartItemQuery.deleteByIds(ids);
 
@@ -91,6 +97,12 @@ public class OrderService {
     // ==========================================
 
     // region
+
+    private List<Long> extractProductIds(List<CartItem> items){
+        return items.stream()
+                .map(item -> item.getProduct().getId())
+                .toList();
+    }
 
     private List<Long> extractIds(List<CartItem> items){
         return items.stream()
@@ -139,20 +151,23 @@ public class OrderService {
         return amount;
     }
 
-    private List<OrderItem> createOrderItem(List<CartItem> items, Order order) {
+    private List<OrderItem> createOrderItem(List<CartItem> items, List<Product> products, Order order) {
 
         List<OrderItem> orderItemsToSave = new ArrayList<>();
 
+        Map<Long, Product> mappedProducts = products.stream()
+                .collect(Collectors.toMap(Product::getId, p -> p));
+
         for (CartItem item : items) {
 
-            Product product = item.getProduct();
+            Product product = mappedProducts.get(item.getProduct().getId());
 
             productQuery.verifyAvailableStock(product.getStock(), item.getQuantity());
 
             OrderItem orderItem = OrderItem.create(
-                    item.getProduct(),
+                    product,
                     item.getQuantity(),
-                    item.getProduct().getPrice(),
+                    product.getPrice(),
                     order
             );
 
