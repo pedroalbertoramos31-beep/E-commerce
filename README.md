@@ -26,7 +26,7 @@ API REST de Ecommerce en desarollo, construido con Spring Boot
 
 Necesitas Docker y Docker-Compose
 
-## Como correrlo
+## Como correr el backend
 
 1. Descarga el repositorio
 
