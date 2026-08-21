@@ -19,3 +19,8 @@ spring:
   logging:
     level:
       org.hibernate.orm.boot: TRACE
+
+  data:
+    redis:
+      host: localhost
+      port: 6379

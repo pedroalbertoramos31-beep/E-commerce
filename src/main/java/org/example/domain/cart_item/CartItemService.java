@@ -72,7 +72,7 @@ public class CartItemService {
 
         CartItem item = cartItemQuery.verifyIsPresent(optionalCartItem);
 
-        productQuery.verifyAvailableStock(product.getStock(), quantity + item.getQuantity());
+        productQuery.verifyAvailableStock(product.getStock(), quantity);
 
         item.changeQuantity(quantity);
 

@@ -5,9 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.example.domain.category.Category;
 import org.example.domain.category.CategoryQuery;
 import org.example.domain.category.CategoryRepository;
-import org.example.domain.product.dto.request.ProductStockIncreaseRequest;
 import org.example.domain.product.dto.request.ProductRegisterRequest;
-import org.example.domain.product.dto.response.*;
+import org.example.domain.product.dto.request.ProductStockIncreaseRequest;
+import org.example.domain.product.dto.response.ProductCardResponse;
+import org.example.domain.product.dto.response.ProductFoundResponse;
+import org.example.domain.product.dto.response.ProductStatusResponse;
+import org.example.domain.product.dto.response.ProductStockResponse;
 import org.example.domain.product_category.ProductCategory;
 import org.example.domain.product_category.ProductCategoryQuery;
 import org.example.domain.product_category.ProductCategoryRepository;
@@ -16,6 +19,8 @@ import org.example.domain.product_stats.ProductStatsQuery;
 import org.example.domain.product_stats.ProductStatsRepository;
 import org.example.domain.user.UserRepository;
 import org.example.infrastructure.exception.error.ProductException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -43,6 +48,7 @@ public class ProductService {
 
     // GET
 
+    @Cacheable(value = "product", key = "#productId")
     public ProductFoundResponse findProduct(Long productId){
 
         ProductStats productStats = productStatsQuery.findByProductIdWithProduct(productId);
@@ -87,6 +93,7 @@ public class ProductService {
 
     // MODIFY
 
+    @CacheEvict(value = "product", key = "#productId")
     @Transactional
     public ProductStatusResponse toggleProductAvailabilityStatus(Long productId, Long userId){
 
@@ -106,6 +113,7 @@ public class ProductService {
         return productMapper.toProductStatusResponse(product);
     }
 
+    @CacheEvict(value = "product", key = "#productId")
     @Transactional
     public void deleteProduct(Long productId, Long userId){
 
@@ -116,6 +124,7 @@ public class ProductService {
         product.changeState(ProductStatus.DELETED);
     }
 
+    @CacheEvict(value = "product", key = "#productId")
     @Transactional
     public ProductStockResponse increaseProductStock(Long productId, Long userId, ProductStockIncreaseRequest request){
 
@@ -130,6 +139,7 @@ public class ProductService {
 
     // ==================== ADMIN METHODS ====================
 
+    @CacheEvict(value = "product", key = "#productId")
     @Transactional
     public ProductStatusResponse approveProduct(Long productId){
 

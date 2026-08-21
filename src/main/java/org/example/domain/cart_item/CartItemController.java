@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/cart-items")
 public class CartItemController {
 
-    CartItemService cartItemService;
+    private final CartItemService cartItemService;
 
-    @PostMapping
+    @PostMapping("/{productId}")
     public ResponseEntity<CartItemResponse> addToCart(
 
             @Valid @RequestBody CartItemQuantityRequest request,
@@ -31,7 +31,7 @@ public class CartItemController {
 
     }
 
-    @PatchMapping
+    @PatchMapping("/{productId}")
     public ResponseEntity<CartItemResponse> updateItemQuantity(
 
             @Valid @RequestBody CartItemQuantityRequest request,

@@ -54,7 +54,7 @@ public class UserController {
 
     /* ADMIN */
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     @PutMapping("/admin/{userId}")
     public ResponseEntity<UserRoleChangeResponse> makeAdmin(
             @PathVariable @Positive Long userId,

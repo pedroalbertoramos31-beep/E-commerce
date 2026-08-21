@@ -3,9 +3,12 @@ package org.example.domain.product;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import org.example.domain.product.dto.request.ProductStockIncreaseRequest;
 import org.example.domain.product.dto.request.ProductRegisterRequest;
-import org.example.domain.product.dto.response.*;
+import org.example.domain.product.dto.request.ProductStockIncreaseRequest;
+import org.example.domain.product.dto.response.ProductCardResponse;
+import org.example.domain.product.dto.response.ProductFoundResponse;
+import org.example.domain.product.dto.response.ProductStatusResponse;
+import org.example.domain.product.dto.response.ProductStockResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -37,7 +40,7 @@ public class ProductController {
     @GetMapping("/like")
     public ResponseEntity<Page<ProductCardResponse>> getProductLikeName(
             @RequestParam String name,
-            @PageableDefault(page = 0, size = 10, sort = "createdAt") Pageable page
+            @PageableDefault(page = 0, size = 10) Pageable page
     )
     {
         Page<ProductCardResponse> products = productService.getProductLikeName(name, page);
@@ -45,6 +48,7 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping
     public ResponseEntity<ProductFoundResponse> registerProduct(
             @Valid @RequestBody ProductRegisterRequest request,
@@ -80,7 +84,7 @@ public class ProductController {
     public ResponseEntity<ProductStockResponse> increaseProductStock(
             @PathVariable @Positive Long productId,
             @AuthenticationPrincipal(expression = "id") Long userId,
-            ProductStockIncreaseRequest request
+            @Valid @RequestBody ProductStockIncreaseRequest request
     ) {
 
         ProductStockResponse product = productService.increaseProductStock(productId, userId, request);

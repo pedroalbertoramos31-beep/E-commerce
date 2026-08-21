@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/category")
 public class CategoryController {
 
-    CategoryService categoryService;
+    private final CategoryService categoryService;
 
 
     /* ADMIN */
